@@ -3,6 +3,14 @@ import { Fragment, useEffect, useMemo, useState } from 'react'
 const $ = (n: number) => '$' + Number(n || 0).toLocaleString('es-CO')
 const DIAS = ['', 'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
 const MODULES = ['Resumen', 'Inventario', 'Ventas', 'Quejas', 'Clientes'] as const
+const NIVELES_CLIENTE = [
+  { nombre: 'Nuevo', puntos: 0 },
+  { nombre: 'Plata', puntos: 100 },
+  { nombre: 'Oro', puntos: 500 }
+] as const
+const nivelCliente = (puntos: number) => puntos >= NIVELES_CLIENTE[2].puntos
+  ? NIVELES_CLIENTE[2].nombre
+  : puntos >= NIVELES_CLIENTE[1].puntos ? NIVELES_CLIENTE[1].nombre : NIVELES_CLIENTE[0].nombre
 
 type Role = 'admin' | 'gerente' | 'cocinero' | 'caja' | 'mesero'
 type User = { id: number; nombre: string; email: string; rol: Role }
@@ -366,6 +374,10 @@ function Clientes({ k, re }: { k: number; re: () => void }) {
   return <>
     <TituloModulo etiqueta="Relaciones" titulo="Clientes" descripcion="Consulta clientes frecuentes y registra nuevos contactos." />
     <div className="module-kpis"><div><span>Clientes registrados</span><strong>{c.length}</strong></div><div><span>Puntos acumulados</span><strong>{puntos.toLocaleString('es-CO')}</strong></div><div><span>Programa</span><strong>1 punto / $1.000</strong></div></div>
+    <h3>Niveles del programa</h3>
+    <div className="module-kpis">
+      {NIVELES_CLIENTE.map(nivel => <div key={nivel.nombre}><span>Nivel {nivel.nombre}</span><strong>{nivel.puntos.toLocaleString('es-CO')} puntos</strong><span>mínimo acumulado</span></div>)}
+    </div>
     <details className="module-action"><summary>Nuevo cliente <small>Agregar un contacto</small></summary>
       <Form btn="Agregar cliente" campos={[{ n: 'nombre', l: 'Nombre' }, { n: 'telefono', l: 'Teléfono', t: 'tel' }]} ok={async d => { await api('/clientes', 'POST', d); re() }} />
     </details>
@@ -373,7 +385,7 @@ function Clientes({ k, re }: { k: number; re: () => void }) {
       <div className="table-tools"><input aria-label="Buscar cliente" placeholder="Nombre o teléfono…" value={buscar} onChange={e => setBuscar(e.target.value)} /></div>
     </div>
     <Tabla cols={['Cliente', 'Teléfono', 'Puntos', 'Nivel']}
-      filas={filtrados.map((x: any) => [x.nombre, x.telefono, x.puntos, x.puntos >= 100 ? 'Oro' : x.puntos >= 30 ? 'Plata' : 'Nuevo'])} />
+      filas={filtrados.map((x: any) => [x.nombre, x.telefono, x.puntos, nivelCliente(Number(x.puntos || 0))])} />
   </>
 }
 
