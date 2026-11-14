@@ -1,0 +1,12 @@
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.env
+**/.env
+npm-debug.log*
+*.log
+.vite/
+**/.vite/
+.DS_Store
+Thumbs.db
