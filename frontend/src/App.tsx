@@ -377,14 +377,6 @@ function Clientes({ k, re }: { k: number; re: () => void }) {
   </>
 }
 
-const DEMO_USERS = [
-  { rol: 'admin', email: 'admin@saboresdelbarrio.com', password: 'admin123', nombre: 'Administrador' },
-  { rol: 'gerente', email: 'gerente@saboresdelbarrio.com', password: 'gerente123', nombre: 'Gerente' },
-  { rol: 'cocinero', email: 'cocina@saboresdelbarrio.com', password: 'cocina123', nombre: 'Cocina' },
-  { rol: 'caja', email: 'caja@saboresdelbarrio.com', password: 'caja123', nombre: 'Caja' },
-  { rol: 'mesero', email: 'mesero@saboresdelbarrio.com', password: 'mesero123', nombre: 'Mesero' }
-] as const
-
 export default function App() {
   const [screen, setScreen] = useState<'landing' | 'login' | 'app'>('landing')
   const [user, setUser] = useState<User | null>(getStoredUser)
@@ -535,27 +527,6 @@ export default function App() {
               {error && <p className="error" role="alert">{error}</p>}
               <button className="primary" type="submit">Entrar al sistema <span aria-hidden="true">→</span></button>
             </form>
-            <div className="demo-label">Accesos de demostración</div>
-            <div className="demo-list">
-              {DEMO_USERS.map(item => (
-                <button
-                  key={item.rol}
-                  type="button"
-                  className="demo-user"
-                  onClick={() => {
-                    const form = document.querySelector('.login-box form') as HTMLFormElement | null
-                    if (form) {
-                      const emailInput = form.querySelector('input[name="email"]') as HTMLInputElement | null
-                      const passwordInput = form.querySelector('input[name="password"]') as HTMLInputElement | null
-                      if (emailInput) emailInput.value = item.email
-                      if (passwordInput) passwordInput.value = item.password
-                    }
-                  }}
-                >
-                  {item.nombre}
-                </button>
-              ))}
-            </div>
           </div>
         </section>
       )}
